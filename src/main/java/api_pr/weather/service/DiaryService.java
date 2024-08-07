@@ -1,10 +1,8 @@
 package api_pr.weather.service;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -25,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import api_pr.weather.WeatherApplication;
 import api_pr.weather.domain.DateWeather;
 import api_pr.weather.domain.Diary;
+import api_pr.weather.exception.InvalidDate;
 import api_pr.weather.repository.DateWeatherRepository;
 import api_pr.weather.repository.DiaryRepository;
 import lombok.RequiredArgsConstructor;
@@ -91,8 +90,12 @@ public class DiaryService {
 		}
 	}
 
+
 	public List<Diary> readDiary(LocalDate localDate) {
 		logger.info("read diary");
+		if (localDate.isAfter(LocalDate.ofYearDay(2050, 1))) {
+			throw new InvalidDate();
+		}
 		return diaryRepository.findAllByLocalDate(localDate);
 	}
 
